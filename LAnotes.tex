@@ -1,0 +1,156 @@
+
+\documentclass[a4,10pt]{ctexart}
+
+
+\usepackage[utf8]{inputenc}
+\usepackage{amsfonts,amsmath,amscd,amssymb,amsthm}
+\usepackage{latexsym,bm}
+\usepackage{cite}
+\usepackage{mathtools,mathdots,graphicx,array}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{color}
+\usepackage{enumitem}
+\usepackage{taffytheme}
+\usepackage{diagbox}
+\usepackage{xcolor,tcolorbox,tikz,tkz-tab,mdframed,tikz-cd}
+\usepackage{framed}
+\usepackage{verbatim}
+\usepackage{extarrows}
+\usepackage{fontspec}
+
+
+\newcommand*{\dif}{\mathop{}\!\mathrm{d}}
+\newcommand*{\arsinh}{\mathop{}\!\mathrm{arsinh}}
+\newcommand*{\artanh}{\mathop{}\!\mathrm{artanh}}
+\newcommand*{\arcosh}{\mathop{}\!\mathrm{arcosh}}
+\newcommand*{\Li}{\mathop{}\!\textrm{Li}}
+
+
+
+\begin{document}
+
+\pagenumbering{roman}
+\title{Linear Algebra Notes}
+\author{T-Axe}
+\date{\today}
+\maketitle
+\tableofcontents
+\newpage
+\pagenumbering{arabic}
+\newpage
+
+
+\section{Preface}
+
+This is a personal note on Linear Algebra (LA). I intend to write in a simple and cohenrent way. The note is biased and does not promise for sufficiency. It is machine learning oriented and can be seen as some preliminary knowledge.
+
+
+
+\section{Introduction}
+
+We introduce the common sense LAs in this section, where we elaborate no abstract algebra level notations.
+
+\paragraph{Motivation}
+
+The basic motivation of LA is the equation
+
+\begin{equation}
+    Ax = b
+\end{equation}
+
+Here, $A \in \RRmn$, $x \in \RRn$,and $b \in \RRm$. The famous Compressed Sensing (CS) problem can be stated as:
+
+
+\begin{qn}{Compressed Sensing (Informal)}
+  GGiven $x$ and $b$, estimate $A$ which is sparse.
+\end{qn}
+
+Furthermore, learning is nonlinear, but linearization is preferred. For example, act. functions ensure nonlinearity of neural networks, but Neural Tangent Kernel (NTK) can reduce it to linearity, thus inspires many works.    
+   
+ 
+\paragraph{Computation}
+
+Basic operations in matrix or scalar form. Say $A, B \in \RRnn$, then we can write $$C = AB = \sumkn A_{ik}B_{kj}$$.
+
+Say $x, y \in \RRn$, then $x^Ty = \sumin x_i y_i$ and $xy^T \in \RRnn$, where $(xy^T)_{ij} = x_i y_j$.
+
+\begin{rk}
+When we project a vector $y \in \RRm$ to $a \in \RRn$, the projection is $\text{Proj}(y;a) = \frac{aa^T}{a^Ta}y$.
+\end{rk}
+
+Furthermore, matrix multiplication in $\RRnn$ is associative. Just exchange the subscripts:
+
+\begin{equation}
+    ((AB)C)_{ij} = \sumkn  ( \sumln a_{il} b_{lk} ) c_{kj} = \sumln  a_{il} ( \sumkn b_{lk} c_{kj} ) = (A(BC))_{ij}
+\end{equation}
+
+\paragraph{Rank}
+
+A matrix $A \in \RRnn$ has rank $r(A)$, it is fullrank $\equiv$ it is nonsingular $\equiv$ it is invertible. For $A \in \RRmn$, $r(A) \leq \min \{ m,n \}$. When we say $A$ is sparse, we mean $r(A) << \leq \min \{ m,n \}$
+
+\paragraph{Orthogonality}
+
+A matrix $U \in \RRnn$ is orthogonal iff $U U^T = U^T U = I$, and iff it keeps Euclidean norm, \emph{i.e.,} $\forall x \in \RRn: ||Ux||_2 = ||x||_2$.
+
+\begin{hint}
+We say two spaces are orthogonal iff they have no intersection but zero. Say $A \in \RRnn$ is a linear transformation, then range space $R(A)$ and the null space $N(A)$ are orthogonal
+\end{hint}
+
+\paragraph{Quadratic Forms}
+
+We say a symmetric matrix $A \in \Sn$ is Positive Definite (PD) iff its Quadratic Form (QF) is always positive, $A \in \Sn$ is Positive SemiDefinite (PSD) iff its QF is always nonnegative.
+
+
+
+\begin{dn}{Quadratic Form (QF)}
+AA QF $(A,x) \in \RRnn \times \RRn$ is $x^TAx = \sumin \sumjn A_{ij} x_ix_j$.
+\end{dn}
+
+\paragraph{Trace}
+
+Say $A \in \RRnn$, its trace is $\sumin a_{ii}$ and trace is commutable as
+
+\begin{equation}
+    trAB = \sumin (AB)_{ii} = \sumin \sumkn (a_{ik} b_{kj}) = \sumin \sumkn (b_{ki} a_{ik}) = \sumin \sumkn (b_{ik} a_{ki}) = trBA
+\end{equation}
+
+
+\paragraph{Norms}
+
+A norm is a function $\RRm \to \RR$ that keeps zero, homogeneous, and holds triangular inequalities. The famous norms include Euclidean norm, 1-norm, infty norm and F-norm
+
+$$||A||_F = \sqrt{ \sumin \sumjn A_{ij}^n} = \sqrt{tr(A^TA)}$$
+
+for matrices.
+
+\paragraph{Eigenvalues}
+
+When we have
+
+\begin{equation}
+    Ax = \lambda x
+\end{equation}
+
+where $A \in \RRnn$, $x \in \RRn$ and $\lambda \in \RR$, we say $x$ is the eigenvector of $A$ and $\lambda$ is the eigenvalue of $A$. A rank $n$ matrix $A$ has $n$ eigenvalues and its trace is the summation $trA = \sumin \lambda_i$ and its determinant $|A| = \prod \limits_{i = 1} ^n \lambda_i$. 
+
+
+\paragraph{Vector Calculus}
+
+A matrix function $f: \RRnn \to \RR$ has gradient $\nabla_A f(A)$ where
+
+$$\nabla_A f(A) =
+\begin{bmatrix}
+\frac{\partial f(A)}{\partial A_{11}} & \frac{\partial f(A)}{\partial A_{12}} & \cdots & \frac{\partial f(A)}{\partial A_{1 n}} \\
+\frac{\partial f(A)}{\partial A_{21}} & \frac{\partial f(A)}{\partial A_{22}} & \cdots & \frac{\partial f(A)}{\partial A_{2 n}} \\
+\vdots & \vdots & \ddots & \vdots \\
+\frac{\partial f(A)}{\partial A_{m 1}} & \frac{\partial f(A)}{\partial A_{m 2}} & \cdots & \frac{\partial f(A)}{\partial A_{m n}}
+\end{bmatrix}
+$$
+
+
+\begin{rk}
+In the famous square loss minimization, we directly use the gradient to find analytic solution where the function is Euclidean loss, \emph{i.e.}, $||Ax-b||_2$.
+\end{rk}
+
+\end{document}
